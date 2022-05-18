@@ -26,12 +26,18 @@ dd {
   margin: 0;
 }
 
+html {
+  font-size: 62.5%;
+}
+
 body {
   min-height: 100vh;
   scroll-behavior: smooth;
   text-rendering: optimizeSpeed;
   line-height: 1.5;
   background: radial-gradient(86.56% 128.35% at 20.09% 59.73%, #2C35A2 1%, #252C88 16%, #1B2167 40%, #15194F 62%, #101540 83%, #0F133B 100%);
+  color: white;
+  font-size: 1.6rem;
 }
 
 ul[class],

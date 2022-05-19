@@ -22,7 +22,7 @@ export class ConverterComponent implements OnInit{
   fromCurrency = 'USD';
   toCurrency = 'UAH';
 
-  requestTimer: ReturnType<typeof setTimeout> | null = null;
+  requestDelayTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(private currencyService: CurrencyService) {
   }
@@ -35,17 +35,17 @@ export class ConverterComponent implements OnInit{
   }
 
   convert(type: 'from-to' | 'to-from') {
-    if (this.requestTimer) {
-      clearTimeout(this.requestTimer);
+    if (this.requestDelayTimer) {
+      clearTimeout(this.requestDelayTimer);
     }
 
 
     if (type === 'from-to') {
       if (!this.fromValue) return;
 
-      this.requestTimer = setTimeout(() => {
+      this.requestDelayTimer = setTimeout(() => {
         this.currencyService.convertCurrency(this.fromValue, this.fromCurrency, this.toCurrency).subscribe((data) => {
-          this.toValue = data.result.toString();
+          this.toValue = data.result.toFixed(2).toString();
         });
       }, 300);
     }
@@ -53,9 +53,9 @@ export class ConverterComponent implements OnInit{
     if (type === 'to-from') {
       if (!this.toValue) return;
 
-      this.requestTimer = setTimeout(() => {
+      this.requestDelayTimer = setTimeout(() => {
         this.currencyService.convertCurrency(this.toValue, this.toCurrency, this.fromCurrency).subscribe((data) => {
-          this.fromValue = data.result.toString();
+          this.fromValue = data.result.toFixed(2).toString();
         });
       }, 300);
     }
@@ -77,11 +77,10 @@ export class ConverterComponent implements OnInit{
       this.fromValue = '';
       this.toValue = '';
 
-      if (this.requestTimer) {
-        clearTimeout(this.requestTimer);
+      if (this.requestDelayTimer) {
+        clearTimeout(this.requestDelayTimer);
       }
 
-      console.log(this.fromValue, this.toValue);
       return;
     }
 

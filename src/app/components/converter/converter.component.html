@@ -5,8 +5,8 @@
     <form *ngIf="!isCurrenciesLoading; else loader">
       <p>You give:</p>
       <div class="currency-from">
-        <input (input)="onValueChange($event)" name="fromValue" [(ngModel)]="fromValue" type="number" autocomplete="off" placeholder="0"/>
-        <select (change)="onCurrencyChange($event)" name="fromCurrency" [(ngModel)]="fromCurrency">
+        <input name="fromValue" type="number" [(ngModel)]="fromValue" (input)="onValueChange($event)" autocomplete="off" placeholder="0"/>
+        <select name="fromCurrency" [(ngModel)]="fromCurrency" (change)="onCurrencyChange($event)">
           <option  *ngFor="let currency of currencies" [value]="currency[0]">
             {{currency[0]}}
           </option>
@@ -19,8 +19,8 @@
       </div>
       <p>You receive:</p>
       <div class="currency-to">
-        <input (input)="onValueChange($event)" name="toValue" [(ngModel)]="toValue" type="number" autocomplete="off" placeholder="0"/>
-        <select (change)="onCurrencyChange($event)" name="toCurrency" [(ngModel)]="toCurrency">
+        <input type="number" name="toValue" [(ngModel)]="toValue" (input)="onValueChange($event)" autocomplete="off" placeholder="0"/>
+        <select name="toCurrency" [(ngModel)]="toCurrency" (change)="onCurrencyChange($event)">
           <option  *ngFor="let currency of currencies" [value]="currency[0]">
             {{currency[0]}}
           </option>

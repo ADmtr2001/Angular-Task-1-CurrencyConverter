@@ -2,18 +2,19 @@
   <div class="converter">
     <h1>Currency Converter</h1>
     <p>Check live foreign currency exchange rates</p>
-    <form>
+    <form *ngIf="!isCurrenciesLoading; else loader">
       <p>You give:</p>
       <div class="currency-from">
         <input (input)="onValueChange($event)" name="fromValue" [ngModel]="fromValue" type="number" autocomplete="off" placeholder="0"/>
         <select (change)="onCurrencyChange($event)" name="fromCurrency" [(ngModel)]="fromCurrency">
-          <option  *ngFor="let currency of currencies" [value]="currency">
-            {{currency}}
+          <option  *ngFor="let currency of currencies" [value]="currency[0]">
+            {{currency[0]}}
           </option>
+<!--          <option>SSS</option>-->
         </select>
       </div>
       <div class="switch-button">
-        <button (click)="switchValues($event)">
+        <button (click)="switchCurrencies($event)">
           <fa-icon [icon]="faRepeat"></fa-icon>
         </button>
       </div>
@@ -21,9 +22,10 @@
       <div class="currency-to">
         <input (input)="onValueChange($event)" name="toValue" [ngModel]="toValue" type="number" autocomplete="off" placeholder="0"/>
         <select (change)="onCurrencyChange($event)" name="toCurrency" [(ngModel)]="toCurrency">
-          <option  *ngFor="let currency of currencies" [value]="currency">
-            {{currency}}
+          <option  *ngFor="let currency of currencies" [value]="currency[0]">
+            {{currency[0]}}
           </option>
+<!--          <option>SSS</option>-->
         </select>
       </div>
     </form>
@@ -32,3 +34,8 @@
     <img src="../../../assets/converter-image.png"/>
   </div>
 </section>
+
+
+<ng-template #loader>
+  <app-loader></app-loader>
+</ng-template>

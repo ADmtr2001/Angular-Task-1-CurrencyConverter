@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
   apiURL: 'https://api.apilayer.com/fixer/',
-  apiKey: 'U3voAeDEe8IxjFfdhQL0OU3Y9osnpglz',
+  apiKey: 'Oqex2INoOOek5CH8oQrP84Kxexh3ay5c',
 };

@@ -6,6 +6,17 @@ export interface Symbols {
   [index: string]: string;
 }
 
+export interface Info {
+  rate: number;
+  timestamp: number;
+}
+
+export interface Query {
+  amount: number;
+  from: string;
+  to: string;
+}
+
 export interface GetCurrenciesResponse {
   success: boolean;
   timestamp: number;
@@ -17,17 +28,6 @@ export interface GetCurrenciesResponse {
 export interface GetCurrencyNamesResponse {
   success: boolean;
   symbols: Symbols;
-}
-
-export interface Info {
-  rate: number;
-  timestamp: number;
-}
-
-export interface Query {
-  amount: number;
-  from: string;
-  to: string;
 }
 
 export interface ConvertCurrencyResponse {

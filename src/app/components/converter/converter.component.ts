@@ -1,30 +1,64 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {faRepeat} from '@fortawesome/free-solid-svg-icons';
+
 import {CurrencyService} from "../../services/currency.service";
 
+import {faRepeat} from '@fortawesome/free-solid-svg-icons';
+
+import {Symbols} from "../../models/Currency";
 
 @Component({
   selector: 'app-converter',
   templateUrl: './converter.component.html',
   styleUrls: ['./converter.component.scss']
 })
-export class ConverterComponent implements OnInit {
-  @Input() currencies!: any;
-  @Input() isCurrenciesLoading!: boolean;
-
+export class ConverterComponent implements OnInit{
   faRepeat = faRepeat;
+
+  currencies: Array<Array<string>> = [];
+  isCurrenciesLoading =  true;
+
   fromValue = '';
-  fromCurrency = 'UAH';
   toValue = '';
-  toCurrency = 'USD';
+  fromCurrency = 'USD';
+  toCurrency = 'UAH';
 
   requestTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(private currencyService: CurrencyService) {
   }
 
-
   ngOnInit(): void {
+    this.currencyService.getCurrencyNames().subscribe((currenciesData) => {
+      this.currencies = Array.from(Object.entries(currenciesData.symbols)) ;
+      this.isCurrenciesLoading = false;
+    });
+  }
+
+  convert(type: 'from-to' | 'to-from') {
+    if (this.requestTimer) {
+      clearTimeout(this.requestTimer);
+    }
+
+
+    if (type === 'from-to') {
+      if (!this.fromValue) return;
+
+      this.requestTimer = setTimeout(() => {
+        this.currencyService.convertCurrency(this.fromValue, this.fromCurrency, this.toCurrency).subscribe((data) => {
+          this.toValue = data.result.toString();
+        });
+      }, 300);
+    }
+
+    if (type === 'to-from') {
+      if (!this.toValue) return;
+
+      this.requestTimer = setTimeout(() => {
+        this.currencyService.convertCurrency(this.toValue, this.toCurrency, this.fromCurrency).subscribe((data) => {
+          this.fromValue = data.result.toString();
+        });
+      }, 300);
+    }
   }
 
   switchCurrencies(event: any): void {
@@ -32,82 +66,48 @@ export class ConverterComponent implements OnInit {
 
     [this.fromCurrency, this.toCurrency] = [this.toCurrency, this.fromCurrency];
 
-    if (this.requestTimer) {
-      clearTimeout(this.requestTimer);
-    }
-    this.requestTimer = setTimeout(() => {
-      if (this.fromValue) {
-        this.currencyService.convertCurrency(this.fromValue, this.fromCurrency, this.toCurrency).subscribe((data) => {
-          this.toValue = data.result.toString();
-        });
-      }
-    }, 250);
+    this.convert('from-to');
   }
 
+  // TODO: Add Event Type
   onValueChange(event: any): void {
     const name = event.target.name as string;
 
-    if (!event.target.value) {
-      this.fromValue = '0';
-      this.toValue = '0';
+    if (!event.target.value || event.target.value < 0) {
+      this.fromValue = '';
+      this.toValue = '';
+
+      if (this.requestTimer) {
+        clearTimeout(this.requestTimer);
+      }
+
+      console.log(this.fromValue, this.toValue);
       return;
     }
 
     if (name === 'fromValue') {
       this.fromValue = event.target.value;
-      if (this.requestTimer) {
-        clearTimeout(this.requestTimer);
-      }
-      this.requestTimer = setTimeout(() => {
-        if (this.fromValue) {
-          this.currencyService.convertCurrency(this.fromValue, this.fromCurrency, this.toCurrency).subscribe((data) => {
-            this.toValue = data.result.toString();
-          });
-        }
-      }, 250);
+      this.convert('from-to');
     }
+
     if (name === 'toValue') {
       this.toValue = event.target.value;
-      if (this.requestTimer) {
-        clearTimeout(this.requestTimer);
-      }
-      this.requestTimer = setTimeout(() => {
-        if (this.toValue) {
-          this.currencyService.convertCurrency(this.toValue, this.toCurrency, this.fromCurrency).subscribe((data) => {
-            this.fromValue = data.result.toString();
-          });
-        }
-      }, 250);
+      this.convert('to-from');
     }
   }
 
+  // TODO: Add Event Type
   onCurrencyChange(event: any): void {
     const name = event.target.name;
+
     if (name === 'fromCurrency') {
       this.fromCurrency = event.target.value;
-      if (this.requestTimer) {
-        clearTimeout(this.requestTimer);
-      }
-      this.requestTimer = setTimeout(() => {
-        if (this.fromValue) {
-          this.currencyService.convertCurrency(this.fromValue, this.fromCurrency, this.toCurrency).subscribe((data) => {
-            this.toValue = data.result.toString();
-          });
-        }
-      }, 250);
+      this.convert('from-to');
     }
+
     if (name === 'toCurrency') {
       this.toCurrency = event.target.value;
-      if (this.requestTimer) {
-        clearTimeout(this.requestTimer);
-      }
-      this.requestTimer = setTimeout(() => {
-        if (this.toValue) {
-          this.currencyService.convertCurrency(this.toValue, this.toCurrency, this.fromCurrency).subscribe((data) => {
-            this.fromValue = data.result.toString();
-          });
-        }
-      }, 250);
+      this.convert('from-to');
     }
   }
 }
